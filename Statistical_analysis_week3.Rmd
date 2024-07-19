@@ -1,0 +1,155 @@
+---
+title: "stat_analysis_wk3"
+author: "Daniel Mogere"
+date: "`r Sys.Date()`"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+# Check which packages are already installed, install others
+pkgs <- c("dplyr", "ggplot2", "knitr","here","stats","corrplot")
+miss_pkgs <- pkgs[!pkgs %in% installed.packages()[,1]] # vector of missing packages
+if(length(miss_pkgs)>0){
+  install.packages(miss_pkgs)}
+
+## Load the packages
+invisible(lapply(pkgs,library,character.only=TRUE))
+
+rm(miss_pkgs, pkgs)
+```
+
+Load the clead data
+```{r}
+ad.cln<-read.csv(here("Clean_Data","adults_clean.csv"))
+#make workclass factor
+ad.cln$workclass<-as.factor(ad.cln$workclass)
+```
+
+Run the Logistic Regression test
+```{r}
+## Fit logistic regression model
+logistic_model <- glm(income ~ workclass, data = ad.cln, family = binomial)
+# Summarize the model
+summary(logistic_model)
+```
+__Interpretation__
+
+Herein I mention about percentage of likelihoo, I obtain the percentage by thsi formula
+
+(exp(co-efficient)/(1+exp(co-efficient)))*100
+
+__Work Class Fedral governenment__
+
+The negative coefficient in the intercept, implies that, when the influence of the other working classes is held constant, an person working in the Federal government 38.6% less likely to earn greater than 50k. Statistically significant.
+__Work Class Local governenment__
+
+The negative coeffciient in the local government work class, indicates that working in the local government is associated with lower likelihood of earning >50K compared to working in fedearal government (38.1% less likely to earn >50K than working in Federal government).This relationship is statistically significant.
+
+__Work Class Never Worked__
+
+The negative coefficient indicates that, individual in the never worked work class are 99.99% less likely to earn greater than 50k than those in the federal government.However this is not statistically significant.
+
+__Work Class Private__
+
+The negative coefficient in this category indicate that, individual in the private work class, are 70.3% less likely to earn more than 50K than those working in Federal givernment. This is statistically significant
+
+__Work Class Self-emp-inc__
+
+The positive co-efficient in this category, indicate that individuals who are self employed and working in the corporate sector are 66.7% more likely to earn >50K than those in the federal government. This is statistically significant
+
+__Work Class Self-emp-not-inc__
+
+The negative coeffiecient, indicates that individuals who are self employed but not incorporated, are 61.3% less likely to earn more than 50K than those in the federal government.This is statistically significant
+
+__Work Class State-gov__
+
+The negatiev coeffciient indicates that, working in the state government is associated with 62.8% less probability of earning more than 50K as compared to working in the Federal government.
+
+__Work Class Without pay__
+
+The negative coefficient implies that working without pay is associated with 99.99% lesser probability of eraning more than 50K as compared to working with the federal governemnt. However, this is not statistically significant.
+
+
+Run Logistic regression model for occupation versus income
+```{r}
+#Make occupation variable factor
+ad.cln$occupation<-as.factor(ad.cln$occupation)
+## Fit logistic regression model
+logistic_model <- glm(income ~ occupation, data = ad.cln, family = binomial)
+# Summarize the model
+summary(logistic_model)
+```
+__Interpretation__
+
+__Occupation Adm-Clerical__
+
+Individuals in the Administrative clerical occupation are 13.4% less likely to earn more than 50K. Statistically significant
+
+__Occupation Armed Forces__
+
+Individuals in the Armed forces occupation are 44.6% less likely to earn more than 50K than those in the administrative clerical occupation. Not Statistically significant
+
+__Occupation Exec Managerial__
+
+Individuals in the Exec managerial occupation are 85.8% more likely to earn more than 50K than those in the administrative clerical occupation. Statistically significant
+
+__Occupation Craft Repair__
+
+Individuals in the Craft repair occupation are 65.4% more likely to earn more than 50K than those in the administrative clerical occupation. Statistically significant
+
+__Occupation Farming Fishing__
+
+Individuals in thefarminhg fishing occupation are 45.7% less likely to earn more than 50K than those in the administrative clerical occupation. Not Statistically significant
+
+__Occupation  Handlers Cleaners__
+
+Individuals who are handlers or cleaners are 30.1% less likely to earn more than 50K than those in the administrative clerical occupation. Statistically significant
+
+__Occupation  Machine op Inspect__
+
+Individuals who are machine operators or inspectors are 47.9% less likely to earn more than 50K than those in the administrative clerical occupation. Not Statistically significant
+
+__Occupation  Other service__
+
+Individuals who are in the other service occupation are 21.8% less likely to earn more than 50K than those in the administrative clerical occupation. Statistically significant
+
+
+__Occupation  Private house service__
+
+Individuals who are in the private house service occupation are 41.7% less likely to earn more than 50K than those in the administrative clerical occupation. Statistically significant
+
+__Occupation  Prof speciality__
+
+Individuals who are in the professional speciality occupation are 77% more likely to earn more than 50K than those in the administrative clerical occupation. Statistically significant.
+
+__Occupation  Protective service__
+
+Individuals who are in the professional speciality occupation are 75.6% more likely to earn more than 50K than those in the administrative clerical occupation. Statistically significant.
+
+__Occupation  Sales__
+
+Individuals who are in the sales occupation are 70% more likely to earn more than 50K than those in the administrative clerical occupation. Statistically significant.
+
+
+__Occupation  Tech Support__
+
+Individuals who are in the Tech support occupation are 73.8% more likely to earn more than 50K than those in the administrative clerical occupation. Statistically significant.
+
+__Occupation  Transport moving__
+
+Individuals who are in the Tech occupation are 61.7% more likely to earn more than 50K than those in the administrative clerical occupation. Statistically significant.
+
+Check for correlation between number of hours per week, education level on income
+```{r}
+## Fit logistic regression model
+logistic_model <- glm(income ~ education+hours.per.week, data = ad.cln, family = binomial)
+# Summarize the model
+summary(logistic_model)
+```
+
+__Interpretation__
+
+The positive coefficient in the hours per week coefficient indicate that working an additional hour per week increases the likelihood of earning more than 50K by 51%.
